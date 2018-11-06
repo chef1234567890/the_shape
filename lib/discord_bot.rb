@@ -29,7 +29,7 @@ module TheShape
       end
 
       @bot.mention do |event|
-        message = @youtube_client.check
+        message = @youtube_client.check(@channel_list)
         event.send_message(message) #unless messages.empty?
       end
 
@@ -45,8 +45,9 @@ module TheShape
         channel_id_to_be_added = event.text.split[1]
         if @youtube_client.validate(channel_id_to_be_added)
             channel_title_to_be_added = @youtube_client.validate(channel_id_to_be_added)
-            YAML.load_file(@channel_list).store(channel_title_to_be_added, channel_id_to_be_added)
-            open(@channel_list, 'w') { |f| f.write(YAML.dump(@channel_list)) }
+            channel_list = YAML.load_file(@channel_list)
+            channel_list.store(channel_title_to_be_added, channel_id_to_be_added)
+            open(@channel_list, 'w') { |f| f.write(YAML.dump(channel_list)) }
             event.send_message("#{channel_title_to_be_added}の監視をはじめたよー＾＾")
         else
           "そんな channel id は存在しまーーーーーーーーーーーせんv(๑・v・๑❀)v"
@@ -55,9 +56,10 @@ module TheShape
 
       @bot.command :delete do |event|
         channel_title_to_be_deleted = event.text.split[1]
-        if YAML.load_file(@channel_list).include?(channel_title_to_be_deleted)
-          YAML.load_file(@channel_list).delete(channel_title_to_be_deleted)
-          open(@channel_list, 'w') { |f| f.write(YAML.dump(@channel_list)) }
+        channel_list = YAML.load_file(@channel_list)
+        if channel_list.include?(channel_title_to_be_deleted)
+          channel_list.delete(channel_title_to_be_deleted)
+          open(@channel_list, 'w') { |f| f.write(YAML.dump(channel_list)) }
           event.send_message("#{channel_title_to_be_deleted}の監視をやめたよー；；")
         else
           "そんな人は監視してまーーーーーーーーーーーせんv(๑・v・๑❀)v"
