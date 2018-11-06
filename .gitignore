@@ -1,0 +1,8 @@
+.idea/
+.bundle/
+.ruby-version
+.byebug_history
+log/
+tmp/
+config/secrets.yml
+config/channel_list.yml
