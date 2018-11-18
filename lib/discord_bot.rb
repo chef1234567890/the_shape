@@ -89,7 +89,6 @@ module TheShape
     end
 
     def send(event, message)
-      byebug
       @twitter_clinet.update(message.truncate(140))
       event.send_message(message)
     end
