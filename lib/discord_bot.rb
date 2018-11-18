@@ -12,6 +12,7 @@ module TheShape
       )
       @channel_list = "./config/channel_list.yml"
       @youtube_client = YoutubeClient.new
+      @twitter_clinet = TwitterClient.new
     end
 
     def run
@@ -25,12 +26,12 @@ module TheShape
       end
 
       @bot.command :test do |event|
-        event.send_message("hello,world.#{event.user.name}")
+        send(event, "hello, world.#{event.user.name}")
       end
 
       @bot.mention do |event|
         message = @youtube_client.check(@channel_list)
-        event.send_message(message) #unless messages.empty?
+        send(event, message) #unless messages.empty?
       end
 
       @bot.command :list do |event|
@@ -38,7 +39,7 @@ module TheShape
         YAML.load_file(@channel_list).each_key { |channel_title|
           targets << channel_title
         }
-        event.send_message("現在の監視対象は #{targets}")
+        send(event, "現在の監視対象は #{targets}")
       end
 
       @bot.command :add do |event|
@@ -48,7 +49,7 @@ module TheShape
             channel_list = YAML.load_file(@channel_list)
             channel_list.store(channel_title_to_be_added, channel_id_to_be_added)
             open(@channel_list, 'w') { |f| f.write(YAML.dump(channel_list)) }
-            event.send_message("#{channel_title_to_be_added}の監視をはじめたよー＾＾")
+            send(event, "#{channel_title_to_be_added}の監視をはじめたよー＾＾")
         else
           "そんな channel id は存在しまーーーーーーーーーーーせんv(๑・v・๑❀)v"
         end
@@ -60,7 +61,7 @@ module TheShape
         if channel_list.include?(channel_title_to_be_deleted)
           channel_list.delete(channel_title_to_be_deleted)
           open(@channel_list, 'w') { |f| f.write(YAML.dump(channel_list)) }
-          event.send_message("#{channel_title_to_be_deleted}の監視をやめたよー；；")
+          send(event, "#{channel_title_to_be_deleted}の監視をやめたよー；；")
         else
           "そんな人は監視してまーーーーーーーーーーーせんv(๑・v・๑❀)v"
         end
@@ -68,25 +69,31 @@ module TheShape
 
       @bot.message(contains: /.*/) do |event|
         case event.message.content
-	when /ひん.*/
-          message = "ひん！"
-	when /.*おはよう.*/
-          message = "おはよう！#{event.user.name}！"
-	when /.*おやすみ.*/
-          message = "おやすみ！#{event.user.name}！"
-	when /.*おはよう.*/
-          message = "おはよう！#{event.user.name}！"
-	when /.*おかえり.*/
-          message = "ただいま！#{event.user.name}！"
-	when /.*ただいま.*/
-          message = "おかえり！#{event.user.name}！"
-	when /.*おつかれ.*/
-          message = "おつかれ！#{event.user.name}！"
+        when /ひん.*/
+                message = "ひん！"
+        when /.*おはよう.*/
+                message = "おはよう！#{event.user.name}！"
+        when /.*おやすみ.*/
+                message = "おやすみ！#{event.user.name}！"
+        when /.*おはよう.*/
+                message = "おはよう！#{event.user.name}！"
+        when /.*おかえり.*/
+                message = "ただいま！#{event.user.name}！"
+        when /.*ただいま.*/
+                message = "おかえり！#{event.user.name}！"
+        when /.*おつかれ.*/
+                message = "おつかれ！#{event.user.name}！"
         end
-        event.send_message(message) if message
+        send(event, message) if message
       end
-
     end
+
+    def send(event, message)
+      byebug
+      @twitter_clinet.update(message.truncate(140))
+      event.send_message(message)
+    end
+
   end
   #DiscordBot.new.run
 end
