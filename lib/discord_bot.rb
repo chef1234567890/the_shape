@@ -97,12 +97,12 @@ module TheShape
       # tweet 検索と follow
       @twitter_clinet.update(message.truncate(140))
       result_tweets = @twitter_clinet.search("デッドバイ")
-      result_tweets.each { |tweet| @twitter_clinet.follow(tweet.user) }
+      result_tweets[0..10].each { |tweet| @twitter_clinet.follow(tweet.user) }
 
       # timeline の fav
       timeline_tweets = @twitter_clinet.home_timeline
       filtered_timeline_tweets = timeline_tweets.select { |tweet| tweet.text =~ /dbd|ドバイ|dead.*by/i }
-      filtered_timeline_tweets.each { |filtered_timeline_tweets| @twitter_clinet.favorite(filtered_timeline_tweets) }
+      filtered_timeline_tweets[0..10].each { |filtered_timeline_tweets| @twitter_clinet.favorite(filtered_timeline_tweets) }
     end
   end
   #DiscordBot.new.run
