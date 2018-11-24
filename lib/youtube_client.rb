@@ -10,7 +10,7 @@ module TheShape
     end
 
     def check(channel_list)
-      fetch_recent_videos = Parallel.map(YAML.load_file(channel_list), in_processes: 4, in_threads: 8) do |channel_title, channel_id|
+      fetch_recent_videos = Parallel.map(YAML.load_file(channel_list), in_processes: 8, in_threads: 40) do |channel_title, channel_id|
         videos = fetch_from_id(channel_id, "videos")
         fetch_recent(videos)
       end

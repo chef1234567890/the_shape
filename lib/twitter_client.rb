@@ -16,7 +16,11 @@ module TheShape
     end
 
     def favorite(tweet)
-      @client.favorite(tweet.id) unless tweet.user.screen_name == @client.user.screen_name
+      begin
+        @client.favorite(tweet.id) unless tweet.user.screen_name == @client.user.screen_name
+      rescue Twitter::Error::TooManyRequests => error
+        # nothing to do
+      end
     end
 
     def home_timeline
