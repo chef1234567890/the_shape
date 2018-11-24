@@ -15,5 +15,25 @@ module TheShape
       @client.update(message)
     end
 
+    def favorite(tweet)
+      @client.favorite(tweet.id) unless tweet.user.screen_name == @client.user.screen_name
+    end
+
+    def home_timeline
+      @client.home_timeline
+    end
+
+    def search(word)
+      tweets = @client.search(word)
+      tweets.select { |tweet| tweet.text.include?(word) }
+    end
+
+    def follow(user)
+      begin
+        @client.follow(user.id) unless user.following?
+      rescue Twitter::Error::TooManyRequests => error
+        # nothing to do
+      end
+    end
   end
 end

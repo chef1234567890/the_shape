@@ -89,10 +89,21 @@ module TheShape
     end
 
     def send(event, message)
-      @twitter_clinet.update(message.truncate(140))
       event.send_message(message)
+      hook_twitter(message)
     end
 
+    def hook_twitter(message)
+      # tweet 検索と follow
+      @twitter_clinet.update(message.truncate(140))
+      result_tweets = @twitter_clinet.search("デッドバイ")
+      result_tweets.each { |tweet| @twitter_clinet.follow(tweet.user) }
+
+      # timeline の fav
+      timeline_tweets = @twitter_clinet.home_timeline
+      filtered_timeline_tweets = timeline_tweets.select { |tweet| tweet.text =~ /dbd|ドバイ|dead.*by/i }
+      filtered_timeline_tweets.each { |filtered_timeline_tweets| @twitter_clinet.favorite(filtered_timeline_tweets) }
+    end
   end
   #DiscordBot.new.run
 end
