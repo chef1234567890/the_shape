@@ -2,7 +2,16 @@
 配信中の youtube live を通知する Discord bot
 
 ## Description
-TBU
+```
++---------+       +-------------+      +-----------------------------+      +-------------+      +------+
+| youtube | <---  | youtube cli | <--- |     streamer's stalker      | ---> | discord cli | ---> | gmkz |
++---------+       +-------------+      +-----------------------------+      |-------------+      +------+
+                                       | youtube side | discord side |
+                                       +--------------+--------------+
+                                       | API key      | API key      |
+                                       | ChannelIDs   | ChannelIDs   |
+                                       +-----------------------------+
+```
 
 ## Build
 ```
